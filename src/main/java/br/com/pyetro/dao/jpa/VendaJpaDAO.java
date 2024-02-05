@@ -10,9 +10,10 @@ import br.com.pyetro.domain.jpa.ProdutoJpa;
 import br.com.pyetro.domain.jpa.VendaJpa;
 import br.com.pyetro.exception.DAOException;
 import br.com.pyetro.exception.TipoChaveNaoEncontradaException;
-import br.com.pyetro.generic.GenericJpaDAO;
 
-public class VendaJpaDAO extends GenericJpaDAO<VendaJpa, Long> implements IVendaJpaDAO {
+import br.com.pyetro.generic.GenericJpaDB1DAO;
+
+public class VendaJpaDAO extends GenericJpaDB1DAO<VendaJpa, Long> implements IVendaJpaDAO {
 
 	public VendaJpaDAO() {
 		super(VendaJpa.class);

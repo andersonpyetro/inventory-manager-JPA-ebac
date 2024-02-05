@@ -34,7 +34,7 @@ public class ProdutoJpaDAOTest {
 			try {
 				produtoDao.excluir(cli);
 			} catch (DAOException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 		});
@@ -69,11 +69,11 @@ public class ProdutoJpaDAOTest {
 	public void alterarCliente()
 			throws TipoChaveNaoEncontradaException, DAOException, MaisDeUmRegistroException, TableException {
 		ProdutoJpa produto = criarProduto("A4");
-		produto.setNome("Rodrigo Pires");
+		produto.setNome("Anderson Pyetro");
 		produtoDao.alterar(produto);
 		ProdutoJpa produtoBD = this.produtoDao.consultar(produto.getId());
 		assertNotNull(produtoBD);
-		Assert.assertEquals("Rodrigo Pires", produtoBD.getNome());
+		Assert.assertEquals("Anderson Pyetro", produtoBD.getNome());
 	}
 
 	@Test

@@ -285,7 +285,7 @@ public class VendaJpaDAOTest {
 			try {
 				this.produtoDao.excluir(prod);
 			} catch (DAOException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 		});
@@ -297,7 +297,7 @@ public class VendaJpaDAOTest {
 			try {
 				this.vendaExclusaoDao.excluir(prod);
 			} catch (DAOException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 		});
@@ -316,12 +316,12 @@ public class VendaJpaDAOTest {
 	private ClienteJpa cadastrarCliente() throws TipoChaveNaoEncontradaException, DAOException {
 		ClienteJpa cliente = new ClienteJpa();
 		cliente.setCpf(rd.nextLong());
-		cliente.setNome("Rodrigo");
-		cliente.setCidade("São Paulo");
+		cliente.setNome("Anderson");
+		cliente.setCidade("Campina Grande");
 		cliente.setEnd("End");
-		cliente.setEstado("SP");
+		cliente.setEstado("Pb");
 		cliente.setNumero(10);
-		cliente.setTel(1199999999L);
+		cliente.setTel(8399999999L);
 		clienteDao.cadastrar(cliente);
 		return cliente;
 	}

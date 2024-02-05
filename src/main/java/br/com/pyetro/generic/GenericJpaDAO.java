@@ -14,18 +14,23 @@ import br.com.pyetro.exception.MaisDeUmRegistroException;
 import br.com.pyetro.exception.TableException;
 import br.com.pyetro.exception.TipoChaveNaoEncontradaException;
 
-public class GenericJpaDAO<T extends Persistente, E extends Serializable> implements IGenericJapDAO<T, E> {
+public class GenericJpaDAO <T extends Persistente, E extends Serializable> implements IGenericJapDAO <T,E> {
 
+	private static final String PERSISTENCE_UNIT_NAME = "JPAebac";
+	
 	protected EntityManagerFactory entityManagerFactory;
-
+	
 	protected EntityManager entityManager;
-
+	
 	private Class<T> persistenteClass;
-
-	public GenericJpaDAO(Class<T> persistenteClass) {
+	
+	private String persistenceUnitName;
+	
+	public GenericJpaDAO(Class<T> persistenteClass, String persistenceUnitName) {
 		this.persistenteClass = persistenteClass;
+		this.persistenceUnitName = persistenceUnitName;
 	}
-
+	
 	@Override
 	public T cadastrar(T entity) throws TipoChaveNaoEncontradaException, DAOException {
 		openConnection();
@@ -65,22 +70,24 @@ public class GenericJpaDAO<T extends Persistente, E extends Serializable> implem
 	@Override
 	public Collection<T> buscarTodos() throws DAOException {
 		openConnection();
-		List<T> list = entityManager.createQuery(getSelectSql(), this.persistenteClass).getResultList();
+		List<T> list = 
+				entityManager.createQuery(getSelectSql(), this.persistenteClass).getResultList();
 		closeConnection();
 		return list;
 	}
-
+	
 	protected void openConnection() {
-		entityManagerFactory = Persistence.createEntityManagerFactory("ExemploJPA");
+		entityManagerFactory = 
+				Persistence.createEntityManagerFactory(getPersistenceUnitName());
 		entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
 	}
-
+	
 	protected void closeConnection() {
 		entityManager.close();
 		entityManagerFactory.close();
 	}
-
+	
 	private String getSelectSql() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT obj FROM ");
@@ -88,5 +95,15 @@ public class GenericJpaDAO<T extends Persistente, E extends Serializable> implem
 		sb.append(" obj");
 		return sb.toString();
 	}
+	
+	private String getPersistenceUnitName() {
+		if (persistenceUnitName != null 
+				&& !"".equals(persistenceUnitName)) {
+			return persistenceUnitName;
+		} else {
+			return PERSISTENCE_UNIT_NAME;
+		}
+	}
+
 
 }

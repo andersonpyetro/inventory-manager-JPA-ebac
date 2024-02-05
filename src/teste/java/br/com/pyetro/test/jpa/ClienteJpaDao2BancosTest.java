@@ -9,6 +9,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
+import br.com.pyetro.dao.jpa.*;
 import br.com.pyetro.dao.jpa.ClienteJpaDAO;
 import br.com.pyetro.dao.jpa.IClienteJpaDAO;
 import br.com.pyetro.domain.jpa.ClienteJpa;
@@ -17,24 +18,44 @@ import br.com.pyetro.exception.MaisDeUmRegistroException;
 import br.com.pyetro.exception.TableException;
 import br.com.pyetro.exception.TipoChaveNaoEncontradaException;
 
-
-public class ClienteJpaDaoTest {
+public class ClienteJpaDao2BancosTest {
 	
 	private IClienteJpaDAO<ClienteJpa> clienteDao;
 	
+	private IClienteJpaDAO<ClienteJpa> clienteDB2Dao;
+	
 	private Random rd;
 	
-	public ClienteJpaDaoTest() {
+	public ClienteJpaDao2BancosTest() {
 		this.clienteDao = new ClienteJpaDAO();
+		this.clienteDB2Dao = new ClienteJpaDB2DAO();
 		rd = new Random();
 	}
 	
 	@After
 	public void end() throws DAOException {
-		Collection<ClienteJpa> list = clienteDao.buscarTodos();
+		Collection<ClienteJpa> list1 = clienteDao.buscarTodos();
+		excluir1(list1);
+		
+		Collection<ClienteJpa> list2 = clienteDB2Dao.buscarTodos();
+		excluir2(list2);
+	}
+	
+	private void excluir1(Collection<ClienteJpa> list) {
 		list.forEach(cli -> {
 			try {
 				clienteDao.excluir(cli);
+			} catch (DAOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		});
+	}
+	
+	private void excluir2(Collection<ClienteJpa> list) {
+		list.forEach(cli -> {
+			try {
+				clienteDB2Dao.excluir(cli);
 			} catch (DAOException e) {
 				
 				e.printStackTrace();
@@ -49,6 +70,12 @@ public class ClienteJpaDaoTest {
 		
 		ClienteJpa clienteConsultado = clienteDao.consultar(cliente.getId());
 		Assert.assertNotNull(clienteConsultado);
+		
+		cliente.setId(null);
+		clienteDB2Dao.cadastrar(cliente);
+		
+		ClienteJpa clienteConsultado2 = clienteDB2Dao.consultar(cliente.getId());
+		Assert.assertNotNull(clienteConsultado2);
 		
 	}
 
@@ -120,7 +147,7 @@ public class ClienteJpaDaoTest {
 			try {
 				clienteDao.excluir(cli);
 			} catch (DAOException e) {
-				
+			
 				e.printStackTrace();
 			}
 		});

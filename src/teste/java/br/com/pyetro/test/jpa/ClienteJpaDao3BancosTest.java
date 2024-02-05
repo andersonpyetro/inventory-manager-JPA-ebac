@@ -9,32 +9,60 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
-import br.com.pyetro.dao.jpa.ClienteJpaDAO;
+
+import br.com.pyetro.dao.jpa.*;
 import br.com.pyetro.dao.jpa.IClienteJpaDAO;
 import br.com.pyetro.domain.jpa.ClienteJpa;
+import br.com.pyetro.domain.jpa.ClienteJpa2;
 import br.com.pyetro.exception.DAOException;
 import br.com.pyetro.exception.MaisDeUmRegistroException;
 import br.com.pyetro.exception.TableException;
 import br.com.pyetro.exception.TipoChaveNaoEncontradaException;
 
-
-public class ClienteJpaDaoTest {
+public class ClienteJpaDao3BancosTest {
 	
 	private IClienteJpaDAO<ClienteJpa> clienteDao;
 	
+	private IClienteJpaDAO<ClienteJpa> clienteDB2Dao;
+	
+	private IClienteJpaDAO<ClienteJpa2> clienteDB3Dao;
+	
 	private Random rd;
 	
-	public ClienteJpaDaoTest() {
+	public ClienteJpaDao3BancosTest() {
 		this.clienteDao = new ClienteJpaDAO();
+		this.clienteDB2Dao = new ClienteJpaDB2DAO();
+		this.clienteDB3Dao = new ClienteJpaDB3DAO();
 		rd = new Random();
 	}
 	
 	@After
 	public void end() throws DAOException {
 		Collection<ClienteJpa> list = clienteDao.buscarTodos();
+		excluir(list, clienteDao);
+		
+		Collection<ClienteJpa> list2 = clienteDB2Dao.buscarTodos();
+		excluir(list2, clienteDB2Dao);
+		
+		Collection<ClienteJpa2> list3 = clienteDB3Dao.buscarTodos();
+		excluir3(list3);
+	}
+	
+	private void excluir(Collection<ClienteJpa> list, IClienteJpaDAO<ClienteJpa> clienteDao) {
 		list.forEach(cli -> {
 			try {
 				clienteDao.excluir(cli);
+			} catch (DAOException e) {
+				
+				e.printStackTrace();
+			}
+		});
+	}
+	
+	private void excluir3(Collection<ClienteJpa2> list) {
+		list.forEach(cli -> {
+			try {
+				clienteDB3Dao.excluir(cli);
 			} catch (DAOException e) {
 				
 				e.printStackTrace();
@@ -49,6 +77,18 @@ public class ClienteJpaDaoTest {
 		
 		ClienteJpa clienteConsultado = clienteDao.consultar(cliente.getId());
 		Assert.assertNotNull(clienteConsultado);
+		
+		cliente.setId(null);
+		clienteDB2Dao.cadastrar(cliente);
+		
+		ClienteJpa clienteConsultado2 = clienteDB2Dao.consultar(cliente.getId());
+		Assert.assertNotNull(clienteConsultado2);
+		
+		ClienteJpa2 cliente2 = criarCliente2();
+		clienteDB3Dao.cadastrar(cliente2);
+		
+		ClienteJpa2 clienteConsultado3 = clienteDB3Dao.consultar(cliente2.getId());
+		Assert.assertNotNull(clienteConsultado3);
 		
 	}
 
@@ -132,6 +172,18 @@ public class ClienteJpaDaoTest {
 	
 	private ClienteJpa criarCliente() {
 		ClienteJpa cliente = new ClienteJpa();
+		cliente.setCpf(rd.nextLong());
+		cliente.setNome("Anderson");
+		cliente.setCidade("Campina Grande");
+		cliente.setEnd("End");
+		cliente.setEstado("PB");
+		cliente.setNumero(10);
+		cliente.setTel(8399999999L);
+		return cliente;
+	}
+	
+	private ClienteJpa2 criarCliente2() {
+		ClienteJpa2 cliente = new ClienteJpa2();
 		cliente.setCpf(rd.nextLong());
 		cliente.setNome("Anderson");
 		cliente.setCidade("Campina Grande");
